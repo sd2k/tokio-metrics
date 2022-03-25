@@ -109,6 +109,16 @@ macro_rules! cfg_rt {
     };
 }
 
+macro_rules! cfg_prom {
+    ($($item:item)*) => {
+        $(
+            #[cfg(all(tokio_unstable, feature = "prometheus"))]
+            #[cfg_attr(docsrs, doc(cfg(all(tokio_unstable, feature = "prometheus"))))]
+            $item
+        )*
+    };
+}
+
 cfg_rt! {
     mod runtime;
     pub use runtime::{
@@ -116,6 +126,11 @@ cfg_rt! {
         RuntimeMetricsIter,
         RuntimeMonitor,
     };
+}
+
+cfg_prom! {
+    mod prometheus;
+    pub use prometheus::PrometheusCollector;
 }
 
 mod task;
